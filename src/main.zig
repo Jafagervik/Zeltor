@@ -4,6 +4,7 @@ const os = std.os;
 const fs = std.fs;
 
 const Lexer = @import("lexer.zig").Lexer;
+const AST = @import("lexer.zig").AST;
 const EXTENSION = @import("constants.zig").EXTENSION;
 const FileError = @import("constants.zig").FileError;
 

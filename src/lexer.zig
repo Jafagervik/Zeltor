@@ -94,11 +94,10 @@ pub const Lexer = struct {
                 },
 
                 '\n' => {
-                    std.log.info("New line", .{});
                     line += 1;
                     column = 0;
                 },
-                else => std.log.info("NO", .{}),
+                else => std.log.info("???", .{}),
             }
 
             //try self.tokenList.append(byte);
