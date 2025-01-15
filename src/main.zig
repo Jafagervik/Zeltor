@@ -41,6 +41,7 @@ pub fn main() !void {
         filename,
         .{ .mode = .read_only },
     );
+
     defer file.close();
 
     const reader = file.reader();
