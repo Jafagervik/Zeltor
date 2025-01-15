@@ -12,7 +12,7 @@ const AST = @import("lexer.zig").AST;
 const EXTENSION = @import("constants.zig").EXTENSION;
 const FileError = @import("constants.zig").FileError;
 
-const DEBUG = false;
+const DEBUG = true;
 
 pub fn main() !void {
     const args = std.process.argsAlloc(std.heap.page_allocator) catch |err| {

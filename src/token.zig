@@ -8,6 +8,13 @@ pub const TokenType = enum(u8) {
     SEMICOLON, // ;
     EOF, //
 
+    QUOTE, // '
+    DOUBLEQUOTE, // "
+
+    // TYPES
+    LETTER,
+    NUMBER,
+
     // Parens
     LPAREN, // (
     RPAREN, // )

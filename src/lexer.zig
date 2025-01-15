@@ -33,15 +33,21 @@ pub const Lexer = struct {
             switch (byte) {
                 '0'...'9' => {
                     // TODO: handle digit
-
+                    try self.tokenList.append(Token.new(line, column, TT.NUMBER, "1"));
                 },
                 'a'...'z', 'A'...'Z' => {
                     // TODO: handle text
-
+                    try self.tokenList.append(Token.new(line, column, TT.LETTER, "a"));
                 },
-                '.',
-                => {
+                '.' => {
                     try self.tokenList.append(Token.new(line, column, TT.DOT, "."));
+                },
+
+                '\'' => {
+                    try self.tokenList.append(Token.new(line, column, TT.QUOTE, "'"));
+                },
+                '\"' => {
+                    try self.tokenList.append(Token.new(line, column, TT.DOUBLEQUOTE, "'"));
                 },
                 ',' => {
                     try self.tokenList.append(Token.new(line, column, TT.COMMA, ","));
