@@ -29,16 +29,19 @@ pub const Lexer = struct {
         std.log.info("I am here now", .{});
 
         while (reader.readByte()) |byte| {
-            std.log.info("NOW {any}", .{byte});
-
             switch (byte) {
                 '.' => std.log.info("DOT", .{}),
+                ',' => std.log.info("Comma", .{}),
+                ';' => std.log.info(";", .{}),
+                '\n' => std.log.info("new line", .{}),
                 else => std.log.info("NO", .{}),
             }
 
             //try self.tokenList.append(byte);
         } else |err| {
-            if (err == error.EndOfStream) {} else {
+            if (err == error.EndOfStream) {
+                std.log.info("Good bye!", .{});
+            } else {
                 return err;
             }
         }
