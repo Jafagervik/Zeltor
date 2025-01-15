@@ -21,18 +21,26 @@ pub const Lexer = struct {
 
     pub fn deinit(self: *Self) void {
         self.tokenList.deinit();
+        self.* = undefined; // added from ziglangset hash_set/managed.zig deinit line 95
     }
 
     /// Pip
     pub fn lex(self: *Self, reader: File.Reader) !void {
-        std.log.info("Lexing..", .{});
-
         var line: u16 = 1;
         var column: u8 = 0;
 
         while (reader.readByte()) |byte| : (column += 1) {
             switch (byte) {
-                '.' => {
+                '0'...'9' => {
+                    // TODO: handle digit
+
+                },
+                'a'...'z', 'A'...'Z' => {
+                    // TODO: handle text
+
+                },
+                '.',
+                => {
                     try self.tokenList.append(Token.new(line, column, TT.DOT, "."));
                 },
                 ',' => {
@@ -63,7 +71,6 @@ pub const Lexer = struct {
                 '}' => {
                     try self.tokenList.append(Token.new(line, column, TT.RBRACE, "}"));
                 },
-
                 '+' => {
                     try self.tokenList.append(Token.new(line, column, TT.PLUS, "+"));
                 },
@@ -92,19 +99,23 @@ pub const Lexer = struct {
                 '>' => {
                     try self.tokenList.append(Token.new(line, column, TT.GT, ">"));
                 },
+                '_' => {
+                    try self.tokenList.append(Token.new(line, column, TT.UNDERSCORE, "_"));
+                },
 
                 '\n' => {
                     line += 1;
                     column = 0;
                 },
-                else => std.log.info("???", .{}),
+
+                else => unreachable,
             }
 
             //try self.tokenList.append(byte);
         } else |err| {
             if (err == error.EndOfStream) {
                 try self.tokenList.append(Token.new(line, column, TT.EOF, ""));
-                std.log.info("Finished lexing!", .{});
+                // std.log.info("Finished lexing!", .{});
                 return;
             } else {
                 return err;

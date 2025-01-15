@@ -1,6 +1,6 @@
 const std = @import("std");
 
-pub const TokenType = enum {
+pub const TokenType = enum(u8) {
     DOT, // .
     COMMA, // ,
     COLON, // :
@@ -34,6 +34,7 @@ pub const TokenType = enum {
 
     // Misc
     SLASHSLASH, // //
+    UNDERSCORE, // _
 };
 
 pub const KeyWords = [_][]const u8{
@@ -47,6 +48,35 @@ pub const KeyWords = [_][]const u8{
     "struct",
     "enum",
 };
+
+// pub const KeyWords = std.AutoHashMap([]const u8, TokenType);
+//
+// // Lexical analyzer function (simplified example)
+// pub fn lexKeyword(value: []const u8) TokenType {
+//     const hashmap = KeyWords{ .data = &[_]std.AutoHashMap.Entry{
+//         .key = "return",
+//         .value = TokenType.Keyword,
+//         .key = "for",
+//         .value = TokenType.Keyword,
+//         .key = "while",
+//         .value = TokenType.Keyword,
+//         .key = "if",
+//         .value = TokenType.Keyword,
+//         .key = "else",
+//         .value = TokenType.Keyword,
+//         .key = "continue",
+//         .value = TokenType.Keyword,
+//         .key = "break",
+//         .value = TokenType.Keyword,
+//         .key = "struct",
+//         .value = TokenType.Keyword,
+//         .key = "enum",
+//         .value = TokenType.Keyword,
+//     } };
+//
+//     // Look up the keyword
+//     return hashmap.get(value) orelse TokenType.EOF;
+// }
 
 /// Representation of a Token
 pub const Token = struct {
