@@ -2,6 +2,10 @@ const std = @import("std");
 const testing = std.testing;
 const os = std.os;
 const fs = std.fs;
+const Timer = std.time.Timer;
+
+const utils = @import("utils.zig");
+const Unit = utils.Unit;
 
 const Lexer = @import("lexer.zig").Lexer;
 const AST = @import("lexer.zig").AST;
@@ -47,7 +51,11 @@ pub fn main() !void {
     var lexer = Lexer.init(allocator);
     defer lexer.deinit();
 
+    var timer = try Timer.start();
     try lexer.lex(reader);
+    const end_time = timer.read();
+
+    std.log.info("Time: {:.4}ms", .{utils.fromNs(end_time, Unit.Milliseconds)});
 
     lexer.printTokens();
 
