@@ -6,7 +6,7 @@ const File = std.fs.File;
 const tok = @import("token.zig");
 
 const Token = tok.Token;
-const TT = tok.TT;
+const TT = tok.TokenType;
 
 pub const Lexer = struct {
     const Self = @This();
@@ -25,31 +25,106 @@ pub const Lexer = struct {
 
     /// Pip
     pub fn lex(self: *Self, reader: File.Reader) !void {
-        _ = self;
-        std.log.info("I am here now", .{});
+        std.log.info("Lexing..", .{});
 
-        while (reader.readByte()) |byte| {
+        var line: u16 = 1;
+        var column: u8 = 0;
+
+        while (reader.readByte()) |byte| : (column += 1) {
             switch (byte) {
-                '.' => std.log.info("DOT", .{}),
-                ',' => std.log.info("Comma", .{}),
-                ';' => std.log.info(";", .{}),
-                '\n' => std.log.info("new line", .{}),
+                '.' => {
+                    try self.tokenList.append(Token.new(line, column, TT.DOT, "."));
+                },
+                ',' => {
+                    try self.tokenList.append(Token.new(line, column, TT.COMMA, ","));
+                },
+                ':' => {
+                    // TODO: Add double colon
+                    try self.tokenList.append(Token.new(line, column, TT.COMMA, ":"));
+                },
+                ';' => {
+                    try self.tokenList.append(Token.new(line, column, TT.SEMICOLON, ";"));
+                },
+                '(' => {
+                    try self.tokenList.append(Token.new(line, column, TT.LPAREN, "("));
+                },
+                ')' => {
+                    try self.tokenList.append(Token.new(line, column, TT.RPAREN, ")"));
+                },
+                '[' => {
+                    try self.tokenList.append(Token.new(line, column, TT.LBRACKET, "["));
+                },
+                ']' => {
+                    try self.tokenList.append(Token.new(line, column, TT.RBRACKET, "]"));
+                },
+                '{' => {
+                    try self.tokenList.append(Token.new(line, column, TT.LBRACE, "}"));
+                },
+                '}' => {
+                    try self.tokenList.append(Token.new(line, column, TT.RBRACE, "}"));
+                },
+
+                '+' => {
+                    try self.tokenList.append(Token.new(line, column, TT.PLUS, "+"));
+                },
+                '-' => {
+                    try self.tokenList.append(Token.new(line, column, TT.MINUS, "-"));
+                },
+                '*' => {
+                    try self.tokenList.append(Token.new(line, column, TT.ASTERISK, "*"));
+                },
+                '/' => {
+                    try self.tokenList.append(Token.new(line, column, TT.SLASH, "/"));
+                },
+                '=' => {
+                    try self.tokenList.append(Token.new(line, column, TT.EQ, "="));
+                },
+                '!' => {
+                    try self.tokenList.append(Token.new(line, column, TT.NOT, "!"));
+                },
+                '#' => {
+                    // COMMENT
+                    continue;
+                },
+                '<' => {
+                    try self.tokenList.append(Token.new(line, column, TT.LT, "<"));
+                },
+                '>' => {
+                    try self.tokenList.append(Token.new(line, column, TT.GT, ">"));
+                },
+
+                '\n' => {
+                    std.log.info("New line", .{});
+                    line += 1;
+                    column = 0;
+                },
                 else => std.log.info("NO", .{}),
             }
 
             //try self.tokenList.append(byte);
         } else |err| {
             if (err == error.EndOfStream) {
-                std.log.info("Good bye!", .{});
+                try self.tokenList.append(Token.new(line, column, TT.EOF, ""));
+                std.log.info("Finished lexing!", .{});
+                return;
             } else {
                 return err;
             }
         }
     }
 
+    fn peek(self: *Self) u8 {
+        _ = self;
+        return 0;
+    }
+
+    fn advance(self: *Self) void {
+        self.reader.readByte();
+    }
+
     pub fn printTokens(self: *Self) void {
-        for (self.tokenList) |token| {
-            std.log.info("{}", .{token});
+        for (self.tokenList.items) |token| {
+            token.print();
         }
     }
 };

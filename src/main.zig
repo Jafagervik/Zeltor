@@ -7,7 +7,7 @@ const Lexer = @import("lexer.zig").Lexer;
 const EXTENSION = @import("constants.zig").EXTENSION;
 const FileError = @import("constants.zig").FileError;
 
-const DEBUG = true;
+const DEBUG = false;
 
 pub fn main() !void {
     const args = std.process.argsAlloc(std.heap.page_allocator) catch |err| {
@@ -34,9 +34,7 @@ pub fn main() !void {
 
     const file = try fs.cwd().openFile(
         filename,
-        .{
-            .mode = .read_only,
-        },
+        .{ .mode = .read_only },
     );
     defer file.close();
 
@@ -49,6 +47,8 @@ pub fn main() !void {
     defer lexer.deinit();
 
     try lexer.lex(reader);
+
+    lexer.printTokens();
 
     // SCAN / TOKENIZE / LEX
 

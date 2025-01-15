@@ -1,9 +1,51 @@
 const std = @import("std");
 
 pub const TokenType = enum {
-    DOT,
-    COMMA,
-    SEMICOLON,
+    DOT, // .
+    COMMA, // ,
+    COLON, // :
+    COLONCOLON, // ::
+    SEMICOLON, // ;
+    EOF, //
+
+    // Parens
+    LPAREN, // (
+    RPAREN, // )
+    LBRACKET, // [
+    RBRACKET, // ]
+    LBRACE, // {
+    RBRACE, // }
+
+    // Operators
+    PLUS, // +
+    MINUS, // -
+    ASTERISK, // *
+    SLASH, // /
+    EQ, // =
+    EQEQ, // ==
+    NOT, // !
+    NOTEQ, // !=
+    GT, // >
+    LT, // <
+    GEQ, // >=
+    LEQ, // <=
+    LSHIFT, // <<
+    RSHIFT, // >>
+
+    // Misc
+    SLASHSLASH, // //
+};
+
+pub const KeyWords = [_][]const u8{
+    "return",
+    "for",
+    "while",
+    "if",
+    "else",
+    "continue",
+    "break",
+    "struct",
+    "enum",
 };
 
 /// Representation of a Token
@@ -29,6 +71,6 @@ pub const Token = struct {
     }
 
     pub fn print(self: Self) void {
-        std.debug.print("Type: {}, Line: {d}, Column: {d}, Value: {s}", .{ self.tt, self.line, self.col, self.value });
+        std.debug.print("Type: {}, Line: {d}, Column: {d}, Value: {s}\n", .{ self.tt, self.line, self.col, self.value });
     }
 };

@@ -1,0 +1,17 @@
+
+
+main :: (a, b, c) {
+    print("Hello", a, b, c);
+}
+
+RGB :: struct {
+    r,
+    g,
+    b
+}
+
+plusOne :: (a) {
+    return a + 1
+}
+
+DIR :: enum { N, S, E, W }
