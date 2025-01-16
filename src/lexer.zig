@@ -144,3 +144,13 @@ pub const Lexer = struct {
         }
     }
 };
+
+pub fn reportError(allocator: std.mem.Allocator, token: Token, message: []const u8) !void {
+    const position = try token.getPosition(allocator);
+    defer allocator.free(position);
+    
+    try std.io.getStdErr().writer().print("Error at {s} - {s}\n", .{
+        position,
+        message,
+    });
+}
