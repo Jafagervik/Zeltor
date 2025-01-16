@@ -110,4 +110,14 @@ pub const Token = struct {
     pub fn print(self: Self) void {
         std.debug.print("Type: {}, Line: {d}, Column: {d}, Value: {s}\n", .{ self.tt, self.line, self.col, self.value });
     }
+
+    pub fn getPosition(self: Token, allocator: std.mem.Allocator) ![]const u8 {
+        return std.fmt.allocPrint(
+            allocator,
+            "{s}:{d}:{d}",
+            .{ self.filename, self.line, self.column },
+        );
+    }
+
+    
 };
