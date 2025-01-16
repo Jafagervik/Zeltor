@@ -1,17 +1,43 @@
-
-
 main :: (a, b, c) {
     print("Hello", a, b, c);
 }
+
+PI :: 3.1419;
 
 RGB :: struct {
     r,
     g,
     b
+};
+
+createRgb :: (r, g, b) {
+    return RGB{ .r = r, .g = g, .b = b };
 }
+
 
 plusOne :: (a) {
-    return a + 1
+    return a + 1;
 }
 
-DIR :: enum { N, S, E, W }
+syntax :: () {
+    arr = [1,2,3,4,5];
+
+    for elem : arr {
+        print(arr);
+    }
+
+    while (arr.pop()) {
+        print("Popping");
+    }
+
+    res = switch (arr) {
+        1 |> 24,
+        2 |> 42,
+        default |> 42,
+    }
+
+    return arr;
+
+}
+
+DIR :: enum { N, S, E, W };

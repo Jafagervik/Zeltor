@@ -1,4 +1,6 @@
 const std = @import("std");
 
 /// Abstract syntax tree for Zeal
-pub const AST = struct {};
+pub const AST = struct {
+    const Self = @This();
+};

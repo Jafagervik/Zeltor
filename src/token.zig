@@ -1,4 +1,5 @@
 const std = @import("std");
+const Allocator = std.mem.Allocator;
 
 pub const TokenType = enum(u8) {
     DOT, // .
@@ -54,6 +55,9 @@ pub const KeyWords = [_][]const u8{
     "break",
     "struct",
     "enum",
+    "switch",
+    "case",
+    "default",
 };
 
 // pub const KeyWords = std.AutoHashMap([]const u8, TokenType);
@@ -111,13 +115,11 @@ pub const Token = struct {
         std.debug.print("Type: {}, Line: {d}, Column: {d}, Value: {s}\n", .{ self.tt, self.line, self.col, self.value });
     }
 
-    pub fn getPosition(self: Token, allocator: std.mem.Allocator) ![]const u8 {
+    pub fn getPosition(self: Token, allocator: Allocator) ![]const u8 {
         return std.fmt.allocPrint(
             allocator,
             "{s}:{d}:{d}",
             .{ self.filename, self.line, self.column },
         );
     }
-
-    
 };

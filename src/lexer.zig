@@ -12,6 +12,7 @@ pub const Lexer = struct {
     const Self = @This();
 
     tokenList: ArrayList(Token),
+    reader: File.Reader = undefined,
 
     pub fn init(allocator: Allocator) Self {
         return .{
@@ -26,14 +27,29 @@ pub const Lexer = struct {
 
     /// Pip
     pub fn lex(self: *Self, reader: File.Reader) !void {
+        self.reader = reader;
+
         var line: u16 = 1;
         var column: u8 = 0;
 
         while (reader.readByte()) |byte| : (column += 1) {
             switch (byte) {
                 '0'...'9' => {
-                    // TODO: handle digit
-                    try self.tokenList.append(Token.new(line, column, TT.NUMBER, "1"));
+                    // TODO: handle digit better?
+                    var num = ArrayList(u8).init(self.tokenList.allocator);
+                    defer num.deinit();
+
+                    try num.append(byte);
+
+                    while (self.peek()) |ch| {
+                        if (ch >= '0' and ch <= '9' or ch == '.') {
+                            try num.append(ch);
+                            _ = try reader.readByte();
+                            column += 1;
+                        } else break;
+                    } else |_| {}
+
+                    try self.tokenList.append(Token.new(line, column, TT.NUMBER, try num.toOwnedSlice()));
                 },
                 'a'...'z', 'A'...'Z' => {
                     // TODO: handle text
@@ -129,9 +145,14 @@ pub const Lexer = struct {
         }
     }
 
-    fn peek(self: *Self) u8 {
-        _ = self;
-        return 0;
+    fn peek(self: *Self) !?u8 {
+        const pos = try self.reader.getPos();
+        const byte = self.reader.readByte() catch |err| {
+            return if (err == error.EndOfStream) null else err;
+        };
+
+        try self.reader.seekTo(pos);
+        return byte;
     }
 
     fn advance(self: *Self) void {
@@ -145,10 +166,10 @@ pub const Lexer = struct {
     }
 };
 
-pub fn reportError(allocator: std.mem.Allocator, token: Token, message: []const u8) !void {
+pub fn reportError(allocator: Allocator, token: Token, message: []const u8) !void {
     const position = try token.getPosition(allocator);
     defer allocator.free(position);
-    
+
     try std.io.getStdErr().writer().print("Error at {s} - {s}\n", .{
         position,
         message,
